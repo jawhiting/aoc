@@ -115,7 +115,7 @@ public class Day13 {
     private void calcDistances(Node node) {
         if( visited.contains(node)) return;
         int nextDistance = distances.get(node)+1;
-        // Prune at 50 distance
+        // Prune at 50 distance for part2
         if( nextDistance <= 50 ) {
 
             Set<Node> neighbours = node.getNeighbours();
