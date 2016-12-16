@@ -4,6 +4,7 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.TreeMultimap;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
  */
 public class Day14 {
 
+    private final boolean part2;
     private final String seed;
     private static final Pattern p3 = Pattern.compile("(.)\\1\\1");
     private static final Pattern p5 = Pattern.compile("(.)\\1\\1\\1\\1");
@@ -30,9 +32,9 @@ public class Day14 {
 //    private Multimap<Integer, String> fives = ArrayListMultimap.create();
     private int check5limit = 0;
 
-    public Day14(String seed) {
+    public Day14(String seed, boolean part2) {
         this.seed = seed;
-
+        this.part2 = part2;
     }
 
     public void run() throws NoSuchAlgorithmException {
@@ -55,7 +57,8 @@ public class Day14 {
                 Optional<Integer> found5 = fives.get(s).parallelStream().filter(x -> x > finalI && x <= finalI+1000).findAny();
                 if( found5.isPresent()) {
                     // Found one:
-                    System.out.println("Found a hash: " + ++foundCount + " " + i + " " + hash(i) + " based on " + s + " in " + found5.get() + " " + hash(found5.get()));
+//                    System.out.println("Found a hash: " + foundCount + " " + i + " " + hash(i) + " based on " + s + " in " + found5.get() + " " + hash(found5.get()));
+                    ++foundCount;
                 }
             }
             i++;
@@ -90,7 +93,7 @@ public class Day14 {
     }
 
     private String hash(int index) {
-        return hashCache.computeIfAbsent(index, this::part2Hash);
+        return part2 ? hashCache.computeIfAbsent(index, this::part2Hash) : hashCache.computeIfAbsent(index, this::part1Hash);
         //return DigestUtils.md5Hex(seed + index);
     }
 
@@ -109,8 +112,14 @@ public class Day14 {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        System.out.println(new Day14("abc").hash(0));
-        new Day14("ihaygndm").run();
+        System.out.println(new Day14("abc", false).hash(0));
+        long start = System.currentTimeMillis();
+        new Day14("ihaygndm", false).run();
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
+
+        start = System.currentTimeMillis();
+        new Day14("ihaygndm", true).run();
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
 
 
     }
