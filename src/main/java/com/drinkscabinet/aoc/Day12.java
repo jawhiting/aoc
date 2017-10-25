@@ -1,6 +1,8 @@
 package com.drinkscabinet.aoc;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,11 +23,9 @@ public class Day12 {
     }
 
     public void run() {
-        BufferedReader br = new BufferedReader(new StringReader(input2));
+        InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream("bonus.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(systemResourceAsStream));
         instructions = br.lines().collect(Collectors.toList());
-
-        // part 2
-        registers[2] = 1;
 
         while (ip < instructions.size()) {
             execute(instructions.get(ip));
@@ -36,6 +36,7 @@ public class Day12 {
 
     public void execute(String instruction) {
         String[] tokens = instruction.split(" ");
+//        System.out.println("Executing: " + ip + " " + instruction );
         try {
             switch (tokens[0]) {
                 case "inc":
@@ -50,17 +51,21 @@ public class Day12 {
                     registers[tokens[2].charAt(0) - 'a'] = getValue(tokens[1]);
                     ip++;
                     break;
+                case "out":
+                    System.out.print((char)getValue(tokens[1]));
+                    ip++;
+                    break;
                 case "jnz":
                     int val = getValue(tokens[1]);
                     if (val != 0) {
-                        ip += Integer.valueOf(tokens[2]);
+                        ip += getValue(tokens[2]);
                     } else {
                         ip++;
                     }
                     break;
             }
         } catch (Exception e) {
-            System.out.println("Got exception on inst: " + instruction + " ip=" + ip + " tokens=" + Arrays.toString(tokens));
+            System.out.println("Got exception on inst: " + instruction + " ip=" + ip + " tokens=" + Arrays.toString(tokens) + " registers=" + Arrays.toString(registers));
             e.printStackTrace();
             throw e;
         }
