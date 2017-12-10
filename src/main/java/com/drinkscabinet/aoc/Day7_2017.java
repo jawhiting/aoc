@@ -43,9 +43,7 @@ public class Day7_2017 {
             return children.stream().map(s -> nodeMap.get(s));
         }
 
-        public boolean isBalanced() {
 
-        }
     }
 
     private static final Pattern p = Pattern.compile("^(\\w+) .(\\d+).");
